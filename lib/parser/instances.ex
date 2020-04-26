@@ -14,6 +14,29 @@ defmodule Parser.Instances do
     &_return/1
   )
 
+  defmacro defelem(fun) do
+    quote do
+      def elem() do
+        fn input ->
+          case unquote(fun).(input) do
+            {:ok, value, remainder} -> {unquote(@success), value, remainder}
+            :error -> unquote(@failure)
+          end
+        end
+      end
+
+      defmonadic satisfy(fun) do
+        x <- elem()
+
+        if(fun.(x)) do
+          return(x)
+        else
+          empty()
+        end
+      end
+    end
+  end
+
   defp _fmap(a2b, fa) do
     fn input ->
       case fa.(input) do

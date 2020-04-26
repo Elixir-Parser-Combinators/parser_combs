@@ -1,18 +1,9 @@
 defmodule Parser do
-  @moduledoc """
-  Documentation for `Parser`.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Parser.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  defmacro __using__(_options) do
+    quote do
+      import Parser.Instances
+      import Typeclasses.Macros
+      import Parser.Combinators
+    end
   end
 end
