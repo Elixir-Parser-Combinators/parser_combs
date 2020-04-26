@@ -6,13 +6,12 @@ defmodule Parser.Instances do
   @success :success
   @failure :failure
 
-  inject_fmap_pure_apply_empty_choice_bind(
+  inject_fmap_empty_choice_bind_return(
     &_fmap/2,
-    &_pure/1,
-    &_apply/2,
     fn _ -> @failure end,
     &_choice/2,
-    &_bind/2
+    &_bind/2,
+    &_return/1
   )
 
   defp _fmap(a2b, fa) do
@@ -22,14 +21,6 @@ defmodule Parser.Instances do
         {@success, value, remainder} -> {@success, a2b.(value), remainder}
       end
     end
-  end
-
-  defp _pure(value) do
-    fn input -> {@success, value, input} end
-  end
-
-  defp _apply(pa2b, pa) do
-    pa2b ~>> fn a2b -> pa ~>> fn a -> return(a2b.(a)) end end
   end
 
   defp _choice(pa1, pa2) do
@@ -48,5 +39,9 @@ defmodule Parser.Instances do
         {@success, value, remainder} -> a2pb.(value).(remainder)
       end
     end
+  end
+
+  defp _return(a) do
+    fn input -> {@success, a, input} end
   end
 end
