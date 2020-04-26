@@ -29,15 +29,7 @@ defmodule Parser.Instances do
   end
 
   defp _apply(pa2b, pa) do
-    fn input ->
-      case pa2b.(input) do
-        @failure ->
-          @failure
-
-        {@success, a2b, remainder} ->
-          fmap(a2b, pa).(remainder)
-      end
-    end
+    pa2b ~>> fn a2b -> pa ~>> fn a -> return(a2b.(a)) end end
   end
 
   defp _choice(pa1, pa2) do
