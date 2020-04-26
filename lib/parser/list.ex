@@ -6,7 +6,7 @@ defmodule Parser.List do
   defelem(&_elem/1)
 
   defp _elem([]) do
-    nil
+    :error
   end
 
   defp _elem([h | t]) do
