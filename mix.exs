@@ -21,7 +21,7 @@ defmodule Parser.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:typeclasses, in_umbrella: true},
+      {:control, in_umbrella: true},
       {:stream_data, ">= 0.0.0"}
     ]
   end
