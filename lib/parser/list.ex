@@ -1,9 +1,16 @@
 defmodule Parser.List do
   @moduledoc false
 
-  use Parser
+  use Parser.Instances
 
-  defelem(&_elem/1)
+  defmacro __using__(_options) do
+    quote do
+      import unquote(__MODULE__)
+      use Parser.Instances
+    end
+  end
+
+  inject_elem(&_elem/1)
 
   defp _elem([]) do
     :error
