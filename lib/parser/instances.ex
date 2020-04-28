@@ -1,50 +1,58 @@
 defmodule Parser.Instances do
   @moduledoc false
 
-  import Typeclasses.Monad
+  use Control.Monad
+  use Control.Alternative
 
   @success :success
   @failure :failure
 
-  inject_fmap_empty_choice_bind_return(
-    &_fmap/2,
-    fn _ -> @failure end,
-    &_choice/2,
+  defmacro __using__(_options) do
+    quote do
+      import unquote(__MODULE__)
+      use Control.Monad
+    end
+  end
+
+  defmacro inject_elem(fun) do
+    quote do
+      def elem() do
+        fn
+          input ->
+            case(unquote(fun).(input)) do
+              {:ok, value, remainder} ->
+                {unquote(@success), value, remainder}
+
+              :error ->
+                unquote(@failure)
+            end
+        end
+      end
+    end
+  end
+
+  inject_bind_return(
     &_bind/2,
     &_return/1
   )
 
-  defmacro defelem(fun) do
-    quote do
-      def elem() do
-        fn input ->
-          case unquote(fun).(input) do
-            {:ok, value, remainder} -> {unquote(@success), value, remainder}
-            :error -> unquote(@failure)
-          end
-        end
-      end
-
-      defmonadic satisfy(fun) do
-        x <- elem()
-
-        if(fun.(x)) do
-          return(x)
-        else
-          empty()
-        end
-      end
-    end
-  end
-
-  defp _fmap(a2b, fa) do
+  defp _bind(ma, a2mb) do
     fn input ->
-      case fa.(input) do
+      case ma.(input) do
         @failure -> @failure
-        {@success, value, remainder} -> {@success, a2b.(value), remainder}
+        {@success, value, remainder} -> a2mb.(value).(remainder)
       end
     end
   end
+
+  defp _return(a) do
+    fn input -> {@success, a, input} end
+  end
+
+  inject_empty_choice(
+    fn _ -> @failure end,
+    &_choice/2
+  )
 
   defp _choice(pa1, pa2) do
     fn input ->
@@ -53,18 +61,5 @@ defmodule Parser.Instances do
         {@success, _value, _remainder} = success -> success
       end
     end
-  end
-
-  defp _bind(pa, a2pb) do
-    fn input ->
-      case pa.(input) do
-        @failure -> @failure
-        {@success, value, remainder} -> a2pb.(value).(remainder)
-      end
-    end
-  end
-
-  defp _return(a) do
-    fn input -> {@success, a, input} end
   end
 end
