@@ -1,9 +1,16 @@
 defmodule Parser.String do
   @moduledoc false
 
-  use Parser
+  use Parser.Instances
 
-  defelem(&_elem/1)
+  defmacro __using__(_options) do
+    quote do
+      import unquote(__MODULE__)
+      use Parser.Instances
+    end
+  end
+
+  inject_elem(&_elem/1)
 
   defp _elem(<<char::utf8, rest::binary>>) do
     {:ok, char, rest}
@@ -11,9 +18,5 @@ defmodule Parser.String do
 
   defp _elem(<<>>) do
     :error
-  end
-
-  def char(x) do
-    satisfy(fn y -> y == x end)
   end
 end
