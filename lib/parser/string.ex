@@ -7,6 +7,7 @@ defmodule Parser.String do
     quote do
       import unquote(__MODULE__)
       use Parser.Instances
+      use Parser.Combinators
     end
   end
 

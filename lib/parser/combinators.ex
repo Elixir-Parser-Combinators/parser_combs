@@ -1,26 +1,28 @@
 defmodule Parser.Combinators do
   @moduledoc false
 
-  import Parser.Instances
-  import Typeclasses.Macros
+  use Parser.Instances
+
+  defmacro __using__(_options) do
+    quote do
+      import unquote(__MODULE__)
+    end
+  end
 
   def parse(parser, input) do
     parser.(input)
-  end
-
-  defmonadic fail(parser) do
-    parser
-    empty()
   end
 
   def some(parser) do
     many(parser) <|> return([])
   end
 
-  defmonadic many(parser) do
-    x <- parser
-    xs <- some(parser)
-    return([x | xs])
+  def many(parser) do
+    monad do
+      x <- parser
+      xs <- some(parser)
+      return([x | xs])
+    end
   end
 
   # TODO find more elegant solution
