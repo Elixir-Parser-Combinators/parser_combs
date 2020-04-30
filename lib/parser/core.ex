@@ -26,14 +26,14 @@ defmodule Parser.Continuation do
     end
   end
 
-  defp elem() do
+  def elem() do
     fn
       <<char::utf8, remainder::binary>> -> {@success, char, remainder}
       _ -> @failure
     end
   end
 
-  defp empty() do
+  def empty() do
     const(@failure)
   end
 
