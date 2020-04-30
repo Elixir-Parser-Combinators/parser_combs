@@ -13,10 +13,6 @@ defmodule Parser.Core do
   @success :success
   @failure :failure
 
-  defp _return(a) do
-    fn input -> {@success, a, input} end
-  end
-
   defp _bind(ma, a2mb) do
     fn input ->
       case ma.(input) do
@@ -26,15 +22,31 @@ defmodule Parser.Core do
     end
   end
 
-  def elem() do
+  defp _return(a) do
+    fn input -> {@success, a, input} end
+  end
+
+  def return(a) do
+    ic(_return(a))
+  end
+
+  defp _elem() do
     fn
       <<char::utf8, remainder::binary>> -> {@success, char, remainder}
       _ -> @failure
     end
   end
 
-  def empty() do
+  def elem() do
+    ic(_elem())
+  end
+
+  defp _empty() do
     const(@failure)
+  end
+
+  def empty() do
+    ic(_empty())
   end
 
   def ic(parser) do
