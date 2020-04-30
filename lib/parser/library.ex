@@ -37,6 +37,6 @@ defmodule Parser.Library do
   end
 
   def digits() do
-    some(digit())
+    fmap(&to_string/1, some(digit()))
   end
 end
