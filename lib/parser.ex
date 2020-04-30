@@ -1,8 +1,7 @@
 defmodule Parser do
   defmacro __using__(_options) do
     quote do
-      import Parser.Instances
-      import Typeclasses.Macros
+      use Parser.Continuation
       import Parser.Combinators
     end
   end
