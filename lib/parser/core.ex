@@ -56,4 +56,8 @@ defmodule Parser.Core do
   def run(m) do
     make_run(&_return/1).(m)
   end
+
+  def parse(parser, input) do
+    run(parser).(input)
+  end
 end
