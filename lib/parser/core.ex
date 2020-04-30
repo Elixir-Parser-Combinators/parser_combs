@@ -13,6 +13,7 @@ defmodule Parser.Core do
   @success :success
   @failure :failure
 
+  # Monad instance 
   defp _bind(ma, a2mb) do
     fn input ->
       case ma.(input) do
@@ -30,6 +31,29 @@ defmodule Parser.Core do
     ic(_return(a))
   end
 
+  # Alternative instance 
+  defp _empty() do
+    const(@failure)
+  end
+
+  def empty() do
+    ic(_empty())
+  end
+
+  defp _choice(c1, c2) do
+    fn input ->
+      case {run(c1).(input), run(empty()).(input)} do
+        {x, x} -> run(c2).(input)
+        {c1x, _} -> c1x
+      end
+    end
+  end
+
+  def c1 <|> c2 do
+    ic(_choice(c1, c2))
+  end
+
+  # Primitives
   defp _elem() do
     fn
       <<char::utf8, remainder::binary>> -> {@success, char, remainder}
@@ -41,14 +65,7 @@ defmodule Parser.Core do
     ic(_elem())
   end
 
-  defp _empty() do
-    const(@failure)
-  end
-
-  def empty() do
-    ic(_empty())
-  end
-
+  # Wrapping / Unwrapping
   def ic(parser) do
     make_ic(&_bind/2).(parser)
   end
@@ -57,6 +74,7 @@ defmodule Parser.Core do
     make_run(&_return/1).(m)
   end
 
+  # Helper functions
   def parse(parser, input) do
     run(parser).(input)
   end
