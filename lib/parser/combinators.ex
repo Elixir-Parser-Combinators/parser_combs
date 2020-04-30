@@ -15,6 +15,18 @@ defmodule Parser.Combinators do
     end
   end
 
+  def many(parser) do
+    some(parser) <|> return([])
+  end
+
+  def some(parser) do
+    monad do
+      x <- parser
+      xs <- many(parser)
+      return([x | xs])
+    end
+  end
+
   def char(c) do
     satisfy(fn x -> x == c end)
   end
@@ -29,5 +41,9 @@ defmodule Parser.Combinators do
       string(cs)
       return(input)
     end
+  end
+
+  def space() do
+    some(char(?\s))
   end
 end
