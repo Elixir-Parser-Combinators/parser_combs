@@ -1,4 +1,4 @@
-defmodule Parser.Continuation do
+defmodule Parser.Core do
   @moduledoc false
 
   use Control.Continuation
