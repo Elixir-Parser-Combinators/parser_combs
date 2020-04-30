@@ -26,15 +26,15 @@ defmodule Parser.Continuation do
     end
   end
 
-  def elem() do
+  defp elem() do
     fn
       <<char::utf8, remainder::binary>> -> {@success, char, remainder}
       _ -> @failure
     end
   end
 
-  def empty() do
-    fn _ -> @failure end
+  defp empty() do
+    const(@failure)
   end
 
   def ic(parser) do
