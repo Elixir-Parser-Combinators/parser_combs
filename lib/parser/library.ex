@@ -25,7 +25,7 @@ defmodule Parser.Library do
   end
 
   def digit_non_zero do
-    satisfy(fn x -> x in '123456789' end)
+    satisfy(fn x -> x in ?1..?9 end)
   end
 
   def zero() do
@@ -38,5 +38,13 @@ defmodule Parser.Library do
 
   def digits() do
     fmap(&to_string/1, some(digit()))
+  end
+  
+  def alpha() do
+    satisfy(fn x -> x in Enum.concat(?a..?z, ?A..?Z) end)
+  end
+  
+  def alphanumeric() do
+    digit() <|> alpha()
   end
 end
