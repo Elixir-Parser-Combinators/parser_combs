@@ -59,6 +59,18 @@ defmodule Parser.Combinators do
     end
   end
 
+  def count(0, _parser) do
+    return([])
+  end
+
+  def count(n, parser) do
+    monad do
+      x <- parser
+      xs <- count(n - 1, parser)
+      return([x | xs])
+    end
+  end
+
   # TODO implement between
   def between(m..n, parser) do
   end
