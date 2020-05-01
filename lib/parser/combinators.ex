@@ -38,4 +38,28 @@ defmodule Parser.Combinators do
       return([x | xs])
     end
   end
+
+  def up_to(0, _parser) do
+    return([])
+  end
+
+  def up_to(n, parser) do
+    up_to1(n, parser) <|> return([])
+  end
+
+  def up_to1(0, _parser) do
+    return([])
+  end
+
+  def up_to1(n, parser) do
+    monad do
+      x <- parser
+      xs <- up_to(n - 1, parser)
+      return([x | xs])
+    end
+  end
+
+  # TODO implement between
+  def between(m..n, parser) do
+  end
 end
