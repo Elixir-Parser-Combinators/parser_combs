@@ -21,7 +21,7 @@ defmodule Parser.Library do
   end
 
   def space() do
-    some(char(?\s))
+    char(?\s)
   end
 
   def digit_non_zero do
@@ -39,11 +39,11 @@ defmodule Parser.Library do
   def digits() do
     fmap(&to_string/1, some(digit()))
   end
-  
+
   def alpha() do
     satisfy(fn x -> x in Enum.concat(?a..?z, ?A..?Z) end)
   end
-  
+
   def alphanumeric() do
     digit() <|> alpha()
   end

@@ -26,4 +26,16 @@ defmodule Parser.Combinators do
       return([x | xs])
     end
   end
+
+  def at_least(0, parser) do
+    many(parser)
+  end
+
+  def at_least(n, parser) do
+    monad do
+      x <- parser
+      xs <- at_least(n - 1, parser)
+      return([x | xs])
+    end
+  end
 end

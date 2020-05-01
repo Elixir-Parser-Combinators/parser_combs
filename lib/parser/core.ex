@@ -78,4 +78,11 @@ defmodule Parser.Core do
   def parse(parser, input) do
     run(parser).(input)
   end
+
+  def run_parser(parser, input) do
+    case parse(parser, input) do
+      {@success, result, _remainder} -> result
+      @failure -> nil
+    end
+  end
 end
