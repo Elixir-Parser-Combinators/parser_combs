@@ -24,6 +24,10 @@ defmodule Parser.Library do
     char(?\s)
   end
 
+  def spaces() do
+    some(space())
+  end
+  
   def digit_non_zero do
     satisfy(fn x -> x in ?1..?9 end)
   end
