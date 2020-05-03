@@ -82,7 +82,7 @@ defmodule Parser.Combinators do
   def between(m, n, parser) do
     between(m..n, parser)
   end
-  
+
   def optional(parser) do
     between(0..1, parser)
   end
