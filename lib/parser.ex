@@ -3,7 +3,6 @@ defmodule Parser do
     quote do
       use Parser.Core
       import Parser.Combinators
-      import Parser.Library
     end
   end
 end
