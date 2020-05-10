@@ -13,7 +13,7 @@ defmodule Parser.Core do
   @success :success
   @failure :failure
 
-  # Monad instance 
+  # Monad instance
   defp _bind(ma, a2mb) do
     fn input ->
       case ma.(input) do
@@ -31,7 +31,7 @@ defmodule Parser.Core do
     ic(_return(a))
   end
 
-  # Alternative instance 
+  # Alternative instance
   defp _empty() do
     const(@failure)
   end
@@ -81,8 +81,14 @@ defmodule Parser.Core do
 
   def run_parser(parser, input) do
     case parse(parser, input) do
-      {@success, result, _remainder} -> result
-      @failure -> nil
+      {@success, result, ""} -> {:ok, result}
+      {@success, _, remainder} -> {:error, "incomplete parse, stopped at: #{remainder}"}
+      @failure -> {:error, "parsing failed"}
     end
+  end
+
+  def run_parser!(parser, input) do
+    {:ok, result} = run_parser(parser, input)
+    result
   end
 end
