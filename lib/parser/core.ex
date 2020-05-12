@@ -1,12 +1,12 @@
 defmodule Parser.Core do
   @moduledoc false
 
-  use Control.Continuation
+  use ContinuationMonad
 
   defmacro __using__(_options) do
     quote do
       import unquote(__MODULE__)
-      use Control.Continuation
+      use ContinuationMonad
     end
   end
 
