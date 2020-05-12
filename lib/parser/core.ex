@@ -88,7 +88,9 @@ defmodule Parser.Core do
   end
 
   def run_parser!(parser, input) do
-    {:ok, result} = run_parser(parser, input)
-    result
+    case run_parser(parser, input) do
+      {:ok, result} -> result
+      {:error, reason} -> raise(reason)
+    end
   end
 end
