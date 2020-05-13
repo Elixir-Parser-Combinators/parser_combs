@@ -42,5 +42,5 @@ end
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/parser](https://hexdocs.pm/parser).
+be found at [https://hexdocs.pm/parser_combs](https://hexdocs.pm/parser_combs).
 
