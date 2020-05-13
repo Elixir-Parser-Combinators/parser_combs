@@ -1,8 +1,10 @@
-defmodule Parser do
+defmodule ParserCombinators do
+  @moduledoc """
+  """
+
   defmacro __using__(_options) do
     quote do
-      import Parser.Instances
-      import Typeclasses.Macros
+      use Parser.Core
       import Parser.Combinators
     end
   end
