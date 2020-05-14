@@ -20,8 +20,8 @@ defmodule ParserCombinators.MixProject do
 
   defp deps do
     [
-      {:monad_cps, "~> 0.1.0"},
-      {:stream_data, ">= 0.0.0"},
+      {:monad_cps, in_umbrella: true},
+      {:stream_data, ">= 0.0.0", only: :dev, runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
