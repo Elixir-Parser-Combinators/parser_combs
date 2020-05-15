@@ -100,7 +100,7 @@ defmodule Parser.Core do
     run(parser).(input)
   end
 
-  @doc"""
+  @doc """
   applies the parser and returns {:ok, result} on successful parse when there is no more input left.
   Returns {:error, reason} if either the parser failed or the input string was not consumed entirely.
   """
