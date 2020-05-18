@@ -15,21 +15,31 @@ defmodule Parser.Core do
     end
   end
 
+  @parser :parser
+
   @success :success
   @failure :failure
 
+  def parser(fun) do
+    {@parser, fun}
+  end
+
   # Monad instance
-  defp _bind(ma, a2mb) do
-    fn input ->
-      case ma.(input) do
-        {@success, a, remainder} -> a2mb.(a).(remainder)
-        @failure -> @failure
+  defp _bind({@parser, g}, f) do
+    parser(fn input ->
+      case g.(input) do
+        {@success, a, remainder} ->
+          {@parser, h} = f.(a)
+          h.(remainder)
+
+        @failure ->
+          @failure
       end
-    end
+    end)
   end
 
   defp _return(a) do
-    fn input -> {@success, a, input} end
+    parser(fn input -> {@success, a, input} end)
   end
 
   @doc """
@@ -42,7 +52,7 @@ defmodule Parser.Core do
 
   # Alternative instance
   defp _empty() do
-    const(@failure)
+    parser(const(@failure))
   end
 
   @doc """
@@ -53,12 +63,12 @@ defmodule Parser.Core do
   end
 
   defp _choice(c1, c2) do
-    fn input ->
-      case {run(c1).(input), run(empty()).(input)} do
-        {x, x} -> run(c2).(input)
+    parser(fn input ->
+      case {parse(c1, input), parse(empty(), input)} do
+        {x, x} -> parse(c2, input)
         {c1x, _} -> c1x
       end
-    end
+    end)
   end
 
   @doc """
@@ -70,10 +80,10 @@ defmodule Parser.Core do
 
   # Primitives
   defp _elem() do
-    fn
+    parser(fn
       <<char::utf8, remainder::binary>> -> {@success, char, remainder}
       _ -> @failure
-    end
+    end)
   end
 
   @doc """
@@ -97,7 +107,8 @@ defmodule Parser.Core do
   applies the parser to the input string, returns value and remaining string
   """
   def parse(parser, input) do
-    run(parser).(input)
+    run(parser)
+    |> (fn {@parser, fun} -> fun.(input) end).()
   end
 
   @doc """
